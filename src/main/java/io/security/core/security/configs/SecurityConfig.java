@@ -1,6 +1,7 @@
 package io.security.core.security.configs;
 
 import io.security.core.security.common.FormWebAuthenticationDetailsSource;
+import io.security.core.security.handler.CustomAuthenticationSuccessHandler;
 import io.security.core.security.provider.CustomAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -16,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @RequiredArgsConstructor
 @Configuration
@@ -51,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl("/login_proc")
                 .authenticationDetailsSource(authenticationDetailsSource())
                 .defaultSuccessUrl("/")
+                .successHandler(authenticationSuccessHandler())
                 .permitAll();
     }
 
@@ -67,5 +70,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationDetailsSource authenticationDetailsSource() {
         return new FormWebAuthenticationDetailsSource();
+    }
+
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return new CustomAuthenticationSuccessHandler();
     }
 }
