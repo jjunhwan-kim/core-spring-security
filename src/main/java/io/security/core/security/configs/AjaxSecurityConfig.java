@@ -1,8 +1,11 @@
 package io.security.core.security.configs;
 
+import io.security.core.security.common.AjaxAccessDeniedHandler;
+import io.security.core.security.common.AjaxLoginAuthenticationEntryPoint;
 import io.security.core.security.filter.AjaxLoginProcessingFilter;
 import io.security.core.security.handler.AjaxAuthenticationFailureHandler;
 import io.security.core.security.handler.AjaxAuthenticationSuccessHandler;
+import io.security.core.security.handler.CustomAccessDeniedHandler;
 import io.security.core.security.provider.AjaxAuthenticationProvider;
 import io.security.core.security.provider.FormAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +18,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -37,10 +42,13 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .antMatcher("/api/**")
                 .authorizeRequests()
+                .antMatchers("/api/messages").hasRole("MANAGER")
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
-
+                .addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling()
+                .authenticationEntryPoint(ajaxLoginAuthenticationEntryPoint())
+                .accessDeniedHandler(ajaxAccessDeniedHandler());
         http
                 .csrf().disable();
     }
@@ -67,5 +75,15 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationFailureHandler ajaxAuthenticationFailureHandler() {
         return new AjaxAuthenticationFailureHandler();
+    }
+
+    @Bean
+    public AuthenticationEntryPoint ajaxLoginAuthenticationEntryPoint() {
+        return new AjaxLoginAuthenticationEntryPoint();
+    }
+
+    @Bean
+    public AccessDeniedHandler ajaxAccessDeniedHandler() {
+        return new AjaxAccessDeniedHandler();
     }
 }
