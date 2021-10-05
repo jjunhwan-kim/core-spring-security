@@ -1,9 +1,9 @@
 package io.security.core.security.configs;
 
 import io.security.core.security.common.FormWebAuthenticationDetailsSource;
-import io.security.core.security.handler.CustomAccessDeniedHandler;
-import io.security.core.security.handler.CustomAuthenticationFailureHandler;
-import io.security.core.security.handler.CustomAuthenticationSuccessHandler;
+import io.security.core.security.handler.FormAccessDeniedHandler;
+import io.security.core.security.handler.FormAuthenticationFailureHandler;
+import io.security.core.security.handler.FormAuthenticationSuccessHandler;
 import io.security.core.security.provider.FormAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         //auth.userDetailsService(userDetailsService);
-        auth.authenticationProvider(authenticationProvider());
+        auth.authenticationProvider(formAuthenticationProvider());
     }
 
     @Override
@@ -60,18 +60,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/login_proc")
-                .authenticationDetailsSource(authenticationDetailsSource())
+                .authenticationDetailsSource(formAuthenticationDetailsSource())
                 .defaultSuccessUrl("/")
-                .successHandler(authenticationSuccessHandler())
-                .failureHandler(authenticationFailureHandler())
+                .successHandler(formAuthenticationSuccessHandler())
+                .failureHandler(formAuthenticationFailureHandler())
                 .permitAll()
                 .and()
                 .exceptionHandling()
-                .accessDeniedHandler(accessDeniedHandler());
+                .accessDeniedHandler(formAccessDeniedHandler());
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
+    public AuthenticationProvider formAuthenticationProvider() {
         return new FormAuthenticationProvider(userDetailsService, passwordEncoder());
     }
 
@@ -81,22 +81,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> authenticationDetailsSource() {
+    public AuthenticationDetailsSource<HttpServletRequest, WebAuthenticationDetails> formAuthenticationDetailsSource() {
         return new FormWebAuthenticationDetailsSource();
     }
 
     @Bean
-    public AuthenticationSuccessHandler authenticationSuccessHandler() {
-        return new CustomAuthenticationSuccessHandler();
+    public AuthenticationSuccessHandler formAuthenticationSuccessHandler() {
+        return new FormAuthenticationSuccessHandler();
     }
 
     @Bean
-    public AuthenticationFailureHandler authenticationFailureHandler() {
-        return new CustomAuthenticationFailureHandler();
+    public AuthenticationFailureHandler formAuthenticationFailureHandler() {
+        return new FormAuthenticationFailureHandler();
     }
 
     @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
-        return new CustomAccessDeniedHandler("/denied");
+    public AccessDeniedHandler formAccessDeniedHandler() {
+        return new FormAccessDeniedHandler("/denied");
     }
 }

@@ -4,7 +4,7 @@
 <meta id="_csrf" name="_csrf" th:content="${_csrf.token}" />
 <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}" />
 
-<head th:replace="layout/header::userHead"></head>
+<head th:replace="layout/header :: userHead"></head>
 <script>
     function formLogin() {
 
@@ -37,7 +37,7 @@
     }
 </script>
 <body>
-<div th:replace="layout/top::header"></div>
+<div th:replace="layout/top :: header"></div>
 <div class="container text-center">
     <div class="login-form d-flex justify-content-center">
         <div class="col-sm-5" style="margin-top: 30px;">
@@ -55,8 +55,8 @@
                 <div class="form-group">
                     <input type="password" class="form-control" name="password" placeholder="비밀번호" required="required">
                 </div>
-                <!-- <button type="submit" class="btn btn-lg btn-primary btn-block">로그인</button> -->
-                <button type="button" onclick="formLogin()" id="formbtn" class="btn btn-lg btn-primary btn-block">로그인</button>
+                <button type="submit" class="btn btn-lg btn-primary btn-block">로그인</button>
+                <!-- <button type="button" onclick="formLogin()" id="formbtn" class="btn btn-lg btn-primary btn-block">Ajax 로그인</button> -->
             </form>
         </div>
     </div>
