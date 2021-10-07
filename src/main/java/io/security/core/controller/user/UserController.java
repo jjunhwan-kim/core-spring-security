@@ -1,7 +1,7 @@
 package io.security.core.controller.user;
 
-import io.security.core.domain.Account;
-import io.security.core.domain.AccountDto;
+import io.security.core.domain.entity.Account;
+import io.security.core.domain.dto.AccountDto;
 import io.security.core.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;

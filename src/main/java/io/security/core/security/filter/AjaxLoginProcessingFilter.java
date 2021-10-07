@@ -1,7 +1,7 @@
 package io.security.core.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.security.core.domain.AccountDto;
+import io.security.core.domain.dto.AccountDto;
 import io.security.core.security.token.AjaxAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;

@@ -1,7 +1,7 @@
 package io.security.core.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.security.core.domain.Account;
+import io.security.core.domain.entity.Account;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;

@@ -1,6 +1,6 @@
 package io.security.core.controller.login;
 
-import io.security.core.domain.Account;
+import io.security.core.domain.entity.Account;
 import io.security.core.security.token.AjaxAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
