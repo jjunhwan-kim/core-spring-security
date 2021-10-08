@@ -61,7 +61,19 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         adminRoles.add(adminRole);
         createUserIfNotFound("admin", "pass", "admin@gmail.com", 20, adminRoles);
 
-        createResourceIfNotFound("/admin/**", "", adminRoles, "url");
+        Set<Role> adminResourceRole = new HashSet<>();
+        adminResourceRole.add(adminRole);
+
+        Set<Role> myPageResourceRole = new HashSet<>();
+        myPageResourceRole.add(userRole);
+
+        Set<Role> messageResourceRole = new HashSet<>();
+        messageResourceRole.add(managerRole);
+
+        createResourceIfNotFound("/admin/**", "", adminResourceRole, "url");
+        createResourceIfNotFound("/mypage", "", myPageResourceRole, "url");
+        createResourceIfNotFound("/messages", "", messageResourceRole, "url");
+        createResourceIfNotFound("/config", "", adminResourceRole, "url");
     }
 
     @Transactional

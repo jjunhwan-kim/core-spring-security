@@ -1,11 +1,13 @@
 package io.security.core.security.configs;
 
 import io.security.core.security.common.FormWebAuthenticationDetailsSource;
+import io.security.core.security.factory.UrlResourceMapFactoryBean;
 import io.security.core.security.handler.FormAccessDeniedHandler;
 import io.security.core.security.handler.FormAuthenticationFailureHandler;
 import io.security.core.security.handler.FormAuthenticationSuccessHandler;
 import io.security.core.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import io.security.core.security.provider.FormAuthenticationProvider;
+import io.security.core.service.SecurityResourceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -43,6 +45,7 @@ import java.util.List;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsService userDetailsService;
+    private final SecurityResourceService securityResourceService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -122,8 +125,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() {
-        return new UrlFilterInvocationSecurityMetadataSource();
+    public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() throws Exception {
+        return new UrlFilterInvocationSecurityMetadataSource(urlResourceMapFactoryBean().getObject());
+    }
+
+    private UrlResourceMapFactoryBean urlResourceMapFactoryBean() {
+        return new UrlResourceMapFactoryBean(securityResourceService);
     }
 
     private AccessDecisionManager affirmativeBased() {
