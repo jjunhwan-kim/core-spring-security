@@ -4,6 +4,7 @@ import io.security.core.domain.dto.ResourceDto;
 import io.security.core.domain.entity.Resource;
 import io.security.core.domain.entity.Role;
 import io.security.core.repository.RoleRepository;
+import io.security.core.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import io.security.core.service.ResourceService;
 import io.security.core.service.RoleService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class ResourceController {
     private final ResourceService resourceService;
     private final RoleRepository roleRepository;
     private final RoleService roleService;
+    private final UrlFilterInvocationSecurityMetadataSource filterInvocationSecurityMetadataSource;
     private final ModelMapper modelMapper = new ModelMapper();
 
     @GetMapping("/admin/resources")
@@ -46,6 +48,7 @@ public class ResourceController {
         resource.setRoles(roles);
 
         resourceService.createResource(resource);
+        filterInvocationSecurityMetadataSource.reload();
 
         return "redirect:/admin/resources";
     }
@@ -81,6 +84,7 @@ public class ResourceController {
     public String removeResource(@PathVariable Long id, Model model) {
 
         resourceService.deleteResource(id);
+        filterInvocationSecurityMetadataSource.reload();
 
         return "redirect:/admin/resources";
     }
