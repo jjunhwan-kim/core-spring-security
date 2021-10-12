@@ -85,7 +85,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .accessDeniedHandler(formAccessDeniedHandler())
                 .and()
-                .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class);
+                .addFilterAt(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class);
     }
 
     @Bean
@@ -147,12 +147,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return roleHierarchy;
     }
 
-    private UrlResourceMapFactoryBean urlResourceMapFactoryBean() {
-        return new UrlResourceMapFactoryBean(securityResourceService);
+    @Bean
+    public AccessDecisionManager affirmativeBased() {
+        return new AffirmativeBased(getAccessDecisionVoters());
     }
 
-    private AccessDecisionManager affirmativeBased() {
-        return new AffirmativeBased(getAccessDecisionVoters());
+    private UrlResourceMapFactoryBean urlResourceMapFactoryBean() {
+        return new UrlResourceMapFactoryBean(securityResourceService);
     }
 
     private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
