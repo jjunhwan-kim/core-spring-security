@@ -3,7 +3,9 @@ package io.security.core.security.listener;
 import io.security.core.domain.entity.Account;
 import io.security.core.domain.entity.Resource;
 import io.security.core.domain.entity.Role;
+import io.security.core.domain.entity.RoleHierarchy;
 import io.security.core.repository.ResourceRepository;
+import io.security.core.repository.RoleHierarchyRepository;
 import io.security.core.repository.RoleRepository;
 import io.security.core.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final ResourceRepository resourcesRepository;
+    private final RoleHierarchyRepository roleHierarchyRepository;
     private final PasswordEncoder passwordEncoder;
     private static AtomicInteger count = new AtomicInteger(0);
 
@@ -74,6 +77,9 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         createResourceIfNotFound("/mypage", "", myPageResourceRole, "url");
         createResourceIfNotFound("/messages", "", messageResourceRole, "url");
         createResourceIfNotFound("/config", "", adminResourceRole, "url");
+
+        createRoleHierarchyIfNotFound(userRole, managerRole);
+        createRoleHierarchyIfNotFound(managerRole, adminRole);
     }
 
     @Transactional
@@ -121,5 +127,27 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
                     .build();
         }
         return resourcesRepository.save(resources);
+    }
+
+    @Transactional
+    public void createRoleHierarchyIfNotFound(Role childRole, Role parentRole) {
+
+        RoleHierarchy parentRoleHierarchy = roleHierarchyRepository.findByName(parentRole.getRoleName());
+        if (parentRoleHierarchy == null) {
+            parentRoleHierarchy = RoleHierarchy.builder()
+                    .name(parentRole.getRoleName())
+                    .build();
+        }
+        parentRoleHierarchy = roleHierarchyRepository.save(parentRoleHierarchy);
+
+        RoleHierarchy childRoleHierarchy = roleHierarchyRepository.findByName(childRole.getRoleName());
+        if (childRoleHierarchy == null) {
+            childRoleHierarchy = RoleHierarchy.builder()
+                    .name(childRole.getRoleName())
+                    .build();
+        }
+
+        childRoleHierarchy.setParent(parentRoleHierarchy);
+        roleHierarchyRepository.save(childRoleHierarchy);
     }
 }
