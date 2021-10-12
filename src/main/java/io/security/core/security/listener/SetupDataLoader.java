@@ -1,13 +1,7 @@
 package io.security.core.security.listener;
 
-import io.security.core.domain.entity.Account;
-import io.security.core.domain.entity.Resource;
-import io.security.core.domain.entity.Role;
-import io.security.core.domain.entity.RoleHierarchy;
-import io.security.core.repository.ResourceRepository;
-import io.security.core.repository.RoleHierarchyRepository;
-import io.security.core.repository.RoleRepository;
-import io.security.core.repository.UserRepository;
+import io.security.core.domain.entity.*;
+import io.security.core.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -29,6 +23,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     private final RoleRepository roleRepository;
     private final ResourceRepository resourcesRepository;
     private final RoleHierarchyRepository roleHierarchyRepository;
+    private final AccessIpRepository accessIpRepository;
     private final PasswordEncoder passwordEncoder;
     private static AtomicInteger count = new AtomicInteger(0);
 
@@ -41,6 +36,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         }
 
         setupSecurityResources();
+
+        setupAccessIpData();
 
         alreadySetup = true;
     }
@@ -149,5 +146,16 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 
         childRoleHierarchy.setParent(parentRoleHierarchy);
         roleHierarchyRepository.save(childRoleHierarchy);
+    }
+
+    private void setupAccessIpData() {
+
+        AccessIp accessIp = accessIpRepository.findByIpAddress("0:0:0:0:0:0:0:1");
+        if (accessIp == null) {
+            accessIp = AccessIp.builder()
+                    .ipAddress("0:0:0:0:0:0:0:1")
+                    .build();
+            accessIpRepository.save(accessIp);
+        }
     }
 }

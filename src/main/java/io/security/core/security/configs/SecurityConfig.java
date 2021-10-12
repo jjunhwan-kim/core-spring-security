@@ -8,6 +8,7 @@ import io.security.core.security.handler.FormAuthenticationFailureHandler;
 import io.security.core.security.handler.FormAuthenticationSuccessHandler;
 import io.security.core.security.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import io.security.core.security.provider.FormAuthenticationProvider;
+import io.security.core.security.voter.IpAddressVoter;
 import io.security.core.service.SecurityResourceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -159,7 +160,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
 
         List<AccessDecisionVoter<? extends Object>> accessDecisionVoters = new ArrayList<>();
+        accessDecisionVoters.add(new IpAddressVoter(securityResourceService));
         accessDecisionVoters.add(roleVoter());
+
 
         return accessDecisionVoters;
     }
